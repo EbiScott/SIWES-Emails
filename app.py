@@ -40,9 +40,17 @@ def send_email(to_email, subject, body, attachments):
 # Function to create customized SIWES letter
 def create_custom_siwes_letter(company_address, output_path):
     doc = Document(SIWES_TEMPLATE_PATH)
+    
+    # Replace placeholder lines with the company address
+    address_lines = company_address.split(', ')
+    i = 0
     for paragraph in doc.paragraphs:
-        if 'COMPANY_ADDRESS' in paragraph.text:
-            paragraph.text = paragraph.text.replace('COMPANY_ADDRESS', company_address)
+        if '_______________________' in paragraph.text and i < len(address_lines):
+            paragraph.text = paragraph.text.replace('_______________________', address_lines[i], 1)
+            i += 1
+        if i == len(address_lines):
+            break
+    
     doc.save(output_path)
 
 # Endpoint to send internship applications
